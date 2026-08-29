@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barang Bagus - Keripik Singkong</title>
+<title>Barang Bagus — Keripik Singkong</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -164,7 +164,7 @@
   .total-row{display:flex; justify-content:space-between; font-weight:700; font-size:1.05rem;}
   .total-row span:last-child{font-family:'JetBrains Mono',monospace;}
 
-  /* ---------- MODALS (auth + checkout) ---------- */
+  /* ---------- MODAL CHECKOUT ---------- */
   .modal-overlay{position:fixed; inset:0; background:rgba(20,15,10,.55); display:none; align-items:center; justify-content:center; z-index:120; padding:20px;}
   .modal-overlay.show{display:flex;}
   .modal{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); width:100%; max-width:400px; padding:30px; box-shadow:var(--shadow); max-height:90vh; overflow-y:auto;}
@@ -178,18 +178,26 @@
   }
   .field textarea{resize:vertical; min-height:60px;}
   .field input:focus, .field textarea:focus{border-color:var(--pedas);}
-  .strength-bar{height:4px; background:var(--line); border-radius:2px; margin-top:6px; overflow:hidden;}
-  .strength-bar i{display:block; height:100%; width:0%; background:var(--pedas); transition:width .2s;}
   .form-msg{font-size:.8rem; padding:10px 12px; border-radius:var(--radius); margin-bottom:14px; display:none;}
   .form-msg.error{display:block; background:color-mix(in srgb, var(--pedas) 14%, var(--surface)); color:var(--pedas);}
   .form-msg.ok{display:block; background:color-mix(in srgb, var(--manis) 22%, var(--surface)); color:#7a5300;}
-  .modal-switch{text-align:center; font-size:.83rem; color:var(--ink-soft); margin-top:16px;}
-  .modal-switch button{background:none; border:none; color:var(--pedas); font-weight:700; text-decoration:underline; padding:0;}
   .modal-close{position:absolute; top:14px; right:14px; background:none; border:none; font-size:1.1rem; color:var(--ink-soft);}
   .modal{position:relative;}
   .full-btn{width:100%; padding:12px; margin-top:6px;}
-  .user-chip{display:flex; align-items:center; gap:8px; font-size:.82rem; font-weight:600;}
-  .user-chip .dot{width:8px;height:8px;border-radius:50%; background:#3EA36B;}
+  .pay-options{display:flex; gap:10px;}
+  .pay-option{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+    border:1px solid var(--line); border-radius:var(--radius); padding:10px; cursor:pointer;
+    font-weight:600; font-size:.88rem; background:var(--bg);
+  }
+  .pay-option:has(input:checked){border-color:var(--pedas); background:color-mix(in srgb, var(--pedas) 10%, var(--surface)); color:var(--pedas);}
+  .pay-option input{accent-color:var(--pedas);}
+  .pay-hint{font-size:.78rem; color:var(--ink-soft); margin:8px 0 0;}
+  .pay-note{
+    font-size:.85rem; font-weight:600; text-align:center; color:var(--ink);
+    border:1px dashed var(--pedas); border-radius:var(--radius); padding:12px 14px; margin:0;
+    background:color-mix(in srgb, var(--pedas) 8%, var(--surface));
+  }
 
   @media (max-width:760px){
     .nav-links{display:none;}
@@ -214,7 +222,6 @@
     <div class="nav-actions">
       <button class="icon-btn" id="themeToggle" title="Ganti mode terang/gelap" aria-label="Ganti tema">🌓</button>
       <button class="icon-btn" id="cartBtn" title="Keranjang" aria-label="Buka keranjang">🛍<span class="cart-badge" id="cartCount" style="display:none;">0</span></button>
-      <div id="authArea"></div>
     </div>
   </div>
 </header>
@@ -261,8 +268,8 @@
     </div>
     <div class="step">
       <span class="num mono">02</span>
-      <h4>Login & Isi Data Kirim</h4>
-      <p>Masuk dengan akun kamu (daftar dulu kalau belum punya), lalu isi nama, alamat, dan catatan.</p>
+      <h4>Isi Data & Pilih Bayar</h4>
+      <p>Isi nama, alamat, catatan, dan pilih mau bayar pakai DANA atau GoPay.</p>
     </div>
     <div class="step">
       <span class="num mono">03</span>
@@ -280,9 +287,9 @@
     <a id="footWaBtn" href="#" target="_blank" class="btn accent">Chat Sekarang</a>
   </div>
   <div class="security-note">
-    <span>🔒</span>
+    <span>💳</span>
     <div>
-      <b>Soal keamanan akun:</b> password kamu tidak pernah disimpan dalam bentuk teks biasa — website ini mengenkripsinya dengan PBKDF2 + SHA-256 (100.000 iterasi) dan garam (salt) acak sebelum disimpan di perangkatmu sendiri. Karena situs ini berjalan tanpa server, login belum benar-benar tersambung ke akun Google — kamu login pakai alamat Gmail sebagai username dan password buatanmu sendiri. Untuk login Google yang sesungguhnya dibutuhkan server & OAuth resmi.
+      <b>Cara bayar:</b> transfer DANA atau GoPay ke nomor <b>0889-8350-0080</b> (nama sama dengan nomor WhatsApp penjual). Setelah checkout, kirim juga bukti transfer ke WhatsApp admin supaya pesanan cepat diproses.
     </div>
   </div>
 </section>
@@ -303,40 +310,6 @@
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
-<div class="modal-overlay" id="loginOverlay">
-  <div class="modal">
-    <button class="modal-close" data-close="loginOverlay">✕</button>
-    <h3>Masuk Akun</h3>
-    <p class="sub">Gunakan alamat Gmail dan password akunmu.</p>
-    <div class="form-msg" id="loginMsg"></div>
-    <div class="field"><label>Email (Gmail)</label><input type="email" id="loginEmail" placeholder="nama@gmail.com"></div>
-    <div class="field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"></div>
-    <button class="btn accent full-btn" id="loginSubmit">Masuk</button>
-    <p class="modal-switch">Belum punya akun? <button data-switch="registerOverlay" data-close="loginOverlay">Daftar di sini</button></p>
-  </div>
-</div>
-
-<!-- REGISTER MODAL -->
-<div class="modal-overlay" id="registerOverlay">
-  <div class="modal">
-    <button class="modal-close" data-close="registerOverlay">✕</button>
-    <h3>Buat Akun Baru</h3>
-    <p class="sub">Daftar pakai Gmail-mu, dan buat password sendiri.</p>
-    <div class="form-msg" id="registerMsg"></div>
-    <div class="field"><label>Nama</label><input type="text" id="regName" placeholder="Nama kamu"></div>
-    <div class="field"><label>Email (Gmail)</label><input type="email" id="regEmail" placeholder="nama@gmail.com"></div>
-    <div class="field">
-      <label>Buat Password</label>
-      <input type="password" id="regPass" placeholder="Minimal 8 karakter">
-      <div class="strength-bar"><i id="strengthBar"></i></div>
-    </div>
-    <div class="field"><label>Ulangi Password</label><input type="password" id="regPass2" placeholder="Ulangi password"></div>
-    <button class="btn accent full-btn" id="registerSubmit">Daftar & Masuk</button>
-    <p class="modal-switch">Sudah punya akun? <button data-switch="loginOverlay" data-close="registerOverlay">Masuk di sini</button></p>
-  </div>
-</div>
-
 <!-- CHECKOUT MODAL -->
 <div class="modal-overlay" id="checkoutOverlay">
   <div class="modal">
@@ -347,7 +320,18 @@
     <div class="field"><label>Nama Penerima</label><input type="text" id="coName" placeholder="Nama lengkap"></div>
     <div class="field"><label>Alamat Kirim</label><textarea id="coAddress" placeholder="Alamat lengkap"></textarea></div>
     <div class="field"><label>Catatan (opsional)</label><textarea id="coNote" placeholder="Contoh: tolong kurangi pedas"></textarea></div>
-    <button class="btn accent full-btn" id="checkoutSubmit">Kirim Pesanan via WhatsApp</button>
+    <div class="field">
+      <label>Metode Pembayaran</label>
+      <div class="pay-options">
+        <label class="pay-option"><input type="radio" name="payMethod" value="DANA" checked><span>DANA</span></label>
+        <label class="pay-option"><input type="radio" name="payMethod" value="GoPay"><span>GoPay</span></label>
+      </div>
+      <p class="pay-hint">Transfer ke nomor <span class="mono">0889-8350-0080</span>, lalu kirim bukti transfer ke WhatsApp admin.</p>
+    </div>
+    <div class="field">
+      <p class="pay-note">Kirim bukti pembayaran melalui WhatsApp, pesanan akan segera diproses.</p>
+    </div>
+    <button class="btn accent full-btn" id="checkoutSubmit">Buat Pesanan</button>
   </div>
 </div>
 
@@ -482,122 +466,9 @@ overlay.addEventListener('click', ()=>{ closeDrawer(); closeAllModals(); });
 ========================================================= */
 function openModal(id){ document.getElementById(id).classList.add('show'); }
 function closeModal(id){ document.getElementById(id).classList.remove('show'); }
-function closeAllModals(){ ['loginOverlay','registerOverlay','checkoutOverlay'].forEach(closeModal); }
+function closeAllModals(){ ['checkoutOverlay'].forEach(closeModal); }
 document.querySelectorAll('[data-close]').forEach(btn=>{
   btn.addEventListener('click', ()=>closeModal(btn.dataset.close));
-});
-document.querySelectorAll('[data-switch]').forEach(btn=>{
-  btn.addEventListener('click', ()=>openModal(btn.dataset.switch));
-});
-
-/* =========================================================
-   AUTH — PBKDF2 + SHA-256 password hashing, stored locally
-========================================================= */
-function bufToHex(buf){ return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join(''); }
-function hexToBuf(hex){ const arr = new Uint8Array(hex.length/2); for(let i=0;i<arr.length;i++) arr[i]=parseInt(hex.substr(i*2,2),16); return arr; }
-
-async function hashPassword(password, saltHex){
-  const salt = saltHex ? hexToBuf(saltHex) : crypto.getRandomValues(new Uint8Array(16));
-  const enc = new TextEncoder().encode(password);
-  const keyMaterial = await crypto.subtle.importKey('raw', enc, {name:'PBKDF2'}, false, ['deriveBits']);
-  const bits = await crypto.subtle.deriveBits(
-    {name:'PBKDF2', salt, iterations:100000, hash:'SHA-256'}, keyMaterial, 256
-  );
-  return { hash: bufToHex(bits), salt: bufToHex(salt) };
-}
-
-function getUsers(){ return JSON.parse(localStorage.getItem('bb_users') || '{}'); }
-function saveUsers(u){ localStorage.setItem('bb_users', JSON.stringify(u)); }
-function getSession(){ return JSON.parse(localStorage.getItem('bb_session') || 'null'); }
-function setSession(email){ localStorage.setItem('bb_session', JSON.stringify({email, at:Date.now()})); renderAuthArea(); }
-function clearSession(){ localStorage.removeItem('bb_session'); renderAuthArea(); }
-
-function isValidGmail(email){ return /^[^\s@]+@gmail\.com$/i.test(email.trim()); }
-
-function renderAuthArea(){
-  const area = document.getElementById('authArea');
-  const session = getSession();
-  if(session){
-    const users = getUsers();
-    const user = users[session.email];
-    area.innerHTML = `<div class="user-chip"><span class="dot"></span>${user?user.name:session.email}
-      <button class="icon-btn" id="logoutBtn" title="Keluar" style="width:30px;height:30px;">⎋</button></div>`;
-    document.getElementById('logoutBtn').addEventListener('click', clearSession);
-  } else {
-    area.innerHTML = `<button class="btn ghost" id="loginBtn">Masuk</button>`;
-    document.getElementById('loginBtn').addEventListener('click', ()=>openModal('loginOverlay'));
-  }
-}
-renderAuthArea();
-
-/* Registration */
-const strengthBar = document.getElementById('strengthBar');
-document.getElementById('regPass').addEventListener('input', e=>{
-  const v = e.target.value;
-  let score = 0;
-  if(v.length>=8) score++;
-  if(/[A-Z]/.test(v)) score++;
-  if(/[0-9]/.test(v)) score++;
-  if(/[^A-Za-z0-9]/.test(v)) score++;
-  const pct = (score/4)*100;
-  strengthBar.style.width = pct+'%';
-  strengthBar.style.background = pct<50 ? 'var(--pedas)' : pct<100 ? 'var(--manis)' : '#3EA36B';
-});
-
-document.getElementById('registerSubmit').addEventListener('click', async ()=>{
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('regPass').value;
-  const pass2 = document.getElementById('regPass2').value;
-  const msg = document.getElementById('registerMsg');
-  msg.className = 'form-msg'; msg.textContent='';
-
-  if(!name || !email || !pass || !pass2){ msg.className='form-msg error'; msg.textContent='Lengkapi semua kolom dulu ya.'; return; }
-  if(!isValidGmail(email)){ msg.className='form-msg error'; msg.textContent='Pakai alamat @gmail.com yang valid.'; return; }
-  if(pass.length<8){ msg.className='form-msg error'; msg.textContent='Password minimal 8 karakter.'; return; }
-  if(pass!==pass2){ msg.className='form-msg error'; msg.textContent='Konfirmasi password tidak cocok.'; return; }
-
-  const users = getUsers();
-  if(users[email]){ msg.className='form-msg error'; msg.textContent='Email ini sudah terdaftar. Coba masuk saja.'; return; }
-
-  const {hash, salt} = await hashPassword(pass);
-  users[email] = {name, hash, salt};
-  saveUsers(users);
-  setSession(email);
-  msg.className='form-msg ok'; msg.textContent='Akun berhasil dibuat!';
-  setTimeout(()=>{ closeModal('registerOverlay'); document.getElementById('regName').value=''; document.getElementById('regEmail').value=''; document.getElementById('regPass').value=''; document.getElementById('regPass2').value=''; strengthBar.style.width='0%'; }, 700);
-});
-
-/* Login with basic lockout throttle */
-let failedAttempts = JSON.parse(localStorage.getItem('bb_fail') || '{}');
-document.getElementById('loginSubmit').addEventListener('click', async ()=>{
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value;
-  const msg = document.getElementById('loginMsg');
-  msg.className='form-msg'; msg.textContent='';
-
-  const lock = failedAttempts[email];
-  if(lock && lock.count>=5 && Date.now()-lock.at < 60000){
-    msg.className='form-msg error';
-    msg.textContent='Terlalu banyak percobaan gagal. Coba lagi dalam 1 menit.';
-    return;
-  }
-  const users = getUsers();
-  const user = users[email];
-  if(!user){ msg.className='form-msg error'; msg.textContent='Email belum terdaftar. Silakan daftar dulu.'; return; }
-
-  const {hash} = await hashPassword(pass, user.salt);
-  if(hash !== user.hash){
-    failedAttempts[email] = { count:(lock?lock.count:0)+1, at:Date.now() };
-    localStorage.setItem('bb_fail', JSON.stringify(failedAttempts));
-    msg.className='form-msg error'; msg.textContent='Password salah, coba lagi.';
-    return;
-  }
-  delete failedAttempts[email];
-  localStorage.setItem('bb_fail', JSON.stringify(failedAttempts));
-  setSession(email);
-  msg.className='form-msg ok'; msg.textContent='Berhasil masuk!';
-  setTimeout(()=>{ closeModal('loginOverlay'); document.getElementById('loginEmail').value=''; document.getElementById('loginPass').value=''; }, 500);
 });
 
 /* =========================================================
@@ -606,7 +477,6 @@ document.getElementById('loginSubmit').addEventListener('click', async ()=>{
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
   const ids = Object.keys(cart).filter(id=>cart[id]>0);
   if(ids.length===0){ alert('Keranjang masih kosong, pilih menu dulu ya.'); return; }
-  if(!getSession()){ closeDrawer(); openModal('loginOverlay'); return; }
   closeDrawer();
   openModal('checkoutOverlay');
 });
@@ -629,7 +499,10 @@ document.getElementById('checkoutSubmit').addEventListener('click', ()=>{
     return `- ${p.name} x${cart[id]} = ${fmtRp(sub)}`;
   }).join('\n');
 
-  const session = getSession();
+  const payMethod = document.querySelector('input[name="payMethod"]:checked').value;
+  const waktuPesan = new Date().toLocaleString('id-ID', {
+    dateStyle:'full', timeStyle:'short'
+  });
   const text =
 `Halo Barang Bagus, saya mau pesan:
 ${lines}
@@ -638,7 +511,9 @@ Total: ${fmtRp(total)}
 Nama: ${name}
 Alamat: ${address}
 Catatan: ${note || '-'}
-Akun: ${session.email}`;
+Bayar via: ${payMethod} (0889-8350-0080)
+Waktu pesan: ${waktuPesan}
+*Bukti pembayaran menyusul saya kirim di chat ini*`;
 
   window.open(waLink(text), '_blank');
   cart = {}; saveCart();
