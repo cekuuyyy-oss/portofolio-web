@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Barang Bagus — Keripik Singkong</title>
+<title>Barang Bagus — Keripik Kentang</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -227,9 +227,9 @@
 </header>
 
 <section class="hero">
-  <span class="hero-eyebrow">Keripik singkong rumahan · digoreng fresh tiap hari</span>
+  <span class="hero-eyebrow">Keripik kentang rumahan · digoreng fresh tiap hari</span>
   <h1 class="display">Renyah<br>Sampai<br>Suapan<br>Terakhir</h1>
-  <p class="lead">Barang Bagus bikin keripik singkong dari singkong pilihan, diiris tipis, digoreng garing, lalu dibumbui empat rasa andalan. Pesan langsung, kami antar racikannya lewat WhatsApp.</p>
+  <p class="lead">Barang Bagus bikin keripik kentang dari kentang pilihan, diiris tipis, digoreng garing, lalu dibumbui empat rasa andalan. Pesan langsung, kami antar racikannya lewat WhatsApp.</p>
   <div class="hero-ctas">
     <a href="#menu" class="btn accent">Lihat Menu</a>
     <a id="heroWaBtn" href="#" target="_blank" class="btn ghost">Chat Admin di WhatsApp</a>
@@ -294,7 +294,7 @@
   </div>
 </section>
 
-<footer>© 2026 BARANG BAGUS — KERIPIK SINGKONG RUMAHAN</footer>
+<footer>© 2026 BARANG BAGUS — KERIPIK KENTANG RUMAHAN</footer>
 
 <!-- CART DRAWER -->
 <div class="overlay" id="overlay"></div>
@@ -341,10 +341,10 @@
 ========================================================= */
 const SELLER_PHONE = "6288983500080"; // format internasional utk wa.me
 const PRODUCTS = [
-  {id:'pedas',    name:'Keripik Pedas',    desc:'Bumbu cabai kering pedas nampol, favorit pelanggan.', price:15000, flavor:'pedas',    level:3},
-  {id:'balado',   name:'Keripik Balado',   desc:'Balutan sambal balado merah, pedas manis gurih.',      price:15000, flavor:'balado',   level:2},
+  {id:'pedas',    name:'Keripik Pedas',    desc:'Bumbu cabai kering pedas nampol, favorit pelanggan.', price:16000, flavor:'pedas',    level:3},
+  {id:'balado',   name:'Keripik Balado',   desc:'Balutan sambal balado merah, pedas manis gurih.',      price:17000, flavor:'balado',   level:2},
   {id:'manis',    name:'Keripik Manis',    desc:'Karamel gula manis legit, renyah di tiap gigitan.',     price:15000, flavor:'manis',    level:0},
-  {id:'original', name:'Keripik Original', desc:'Rasa singkong asli, gurih tanpa tambahan bumbu pedas.', price:14000, flavor:'original', level:0},
+  {id:'original', name:'Keripik Original', desc:'Rasa kentang asli, gurih tanpa tambahan bumbu pedas.', price:14000, flavor:'original', level:0},
 ];
 const flavorColor = f => getComputedStyle(document.documentElement).getPropertyValue('--'+f).trim();
 
@@ -362,8 +362,8 @@ document.getElementById('themeToggle').addEventListener('click', ()=>{
    WHATSAPP LINKS (hero/footer chat)
 ========================================================= */
 function waLink(text){ return `https://wa.me/${SELLER_PHONE}?text=${encodeURIComponent(text)}`; }
-document.getElementById('heroWaBtn').href = waLink('Halo Barang Bagus, saya mau tanya-tanya soal keripik singkong.');
-document.getElementById('footWaBtn').href = waLink('Halo Barang Bagus, saya mau tanya-tanya soal keripik singkong.');
+document.getElementById('heroWaBtn').href = waLink('Halo Barang Bagus, saya mau tanya-tanya soal keripik kentang.');
+document.getElementById('footWaBtn').href = waLink('Halo Barang Bagus, saya mau tanya-tanya soal keripik kentang.');
 
 /* =========================================================
    RENDER MENU
@@ -411,7 +411,10 @@ menuGrid.addEventListener('click', e=>{
   const plus = e.target.dataset.plus, minus = e.target.dataset.minus, add = e.target.dataset.add;
   if(plus){ qtyState[plus]++; document.getElementById('qty-'+plus).textContent = qtyState[plus]; }
   if(minus){ qtyState[minus]=Math.max(1,qtyState[minus]-1); document.getElementById('qty-'+minus).textContent = qtyState[minus]; }
-  if(add){ addToCart(add, qtyState[add]); qtyState[add]=1; document.getElementById('qty-'+add).textContent = 1; }
+  if(add){
+    addToCart(add, qtyState[add]);
+    qtyState[add]=1; document.getElementById('qty-'+add).textContent = 1;
+  }
 });
 
 /* =========================================================
